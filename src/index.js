@@ -1,16 +1,27 @@
 import dotenv from 'dotenv'
-import mongoose from "mongoose";
-
 import connectDB from "./db/index.js";
+import { app } from './app.js';
 
-dotenv.config({
+// to use dotenv you will have to add inside json file "dev": "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+dotenv.config({  
   path: './env'
 })
 
 
 
-connectDB();
-
+connectDB() // mongodb  connected
+.then(()=>{
+  app.on("error",(error)=>{
+    console.log("ERROR",error)
+    throw error
+  })
+  app.listen(process.env.PORT || 8000, ()=>{
+    console.log(`server running at: http://localhost:${process.env.PORT}`)
+  })
+})
+.catch((err)=>{
+  console.log("MONGODB connection failed!!!", err)
+})
 
 
 /* //naive approach
